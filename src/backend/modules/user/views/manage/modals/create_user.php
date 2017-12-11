@@ -18,6 +18,18 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="form-1-1" class="col-md-3 control-label">Tipo Documento</label>
+                                <div class="col-md-9"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[tdocu]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_DOCUMENTO), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboTipoDoc"]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row d-none" id="row_pais">
+                                <label for="form-1-1" class="col-md-3 control-label">Pais Proveniente</label>
+                                <div class="col-md-9"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[pais]", "", app\components\UChacad::getPais(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Nombres</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" name="identis[Nombres]" autocomplete="off" placeholder="Nombres">
@@ -38,7 +50,13 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Sexo</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="identis[Sexo]" autocomplete="off" placeholder="Sexo">
+                                    <?= yii\helpers\Html::dropDownList("identis[Sexo]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_GENERO), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-3 control-label">Fecha de Nacimiento</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control datepicker" name="identis[Fnac]" autocomplete="off" placeholder="Fecha de Nacimiento">
                                 </div>
                             </div>
                         </div>
@@ -47,13 +65,50 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Teléfono</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="contacto[telefono]" autocomplete="off" placeholder="Teléfono">
+                                    <input type="text" class="form-control" name="identis[telefono]" autocomplete="off" placeholder="Teléfono">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Email</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="contacto[email]" autocomplete="off" placeholder="Email">
+                                    <input type="text" class="form-control" name="identis[email]" autocomplete="off" placeholder="Email">
+                                </div>
+                            </div>
+                            <h3>Configuración</h3>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-4 control-label">¿Acceso a la Red UPCH?</label>
+                                <div class="col-md-8"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[acceso]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-4 control-label">¿Correo UPCH?</label>
+                                <div class="col-md-8"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[correo_upch]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-4 control-label">Situación</label>
+                                <div class="col-md-8"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[situacion]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_SITUACION), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboSituacion"]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row d-none" id="row_modalidad">
+                                <label for="form-1-1" class="col-md-4 control-label">Modalidad</label>
+                                <div class="col-md-8"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[modalidad]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_MODALIDAD), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-4 control-label">Fecha de Expiración</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control datepicker" name="identis[Fexp]" autocomplete="off" placeholder="Fecha de Expiración">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-4 control-label">Unidad Solicitante</label>
+                                <div class="col-md-8"> 
+                                    <?= yii\helpers\Html::dropDownList("identis[unidad]", "", app\components\UChacad::getUnidad(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
                         </div>

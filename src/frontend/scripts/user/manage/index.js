@@ -17,6 +17,14 @@
         $modalCheckUser.modal({backdrop: 'static'}); // no cerrar el modal al hacer click fuera de el
     });
 
+    $modalCreateUser.on("shown.bs.modal", function () {
+        $(".datepicker").datepicker({
+            format: "dd-mm-yyyy",
+            language: "es",
+            autoclose: true
+        });
+    });
+
     // formulario de chequear usuario
     $modalCheckUser.find('#form-check-user').validate({
         submitHandler: function (form) {
@@ -49,8 +57,13 @@
             'identis[Nombres]': {required: true},
             'identis[Ape1]': {required: true},
             'identis[Ape2]': {required: true},
-            'contacto[telefono]': {required: true},
-            'contacto[email]': {required: true, email: true}
+            'identis[telefono]': {required: true},
+            'identis[email]': {required: true, email: true},
+            'identis[acceso]': {required: true, email: true},
+            'identis[correo_upch]': {required: true, email: true},
+            'identis[situacion]': {required: true, email: true},
+            'identis[Fexp]': {required: true, email: true},
+            'identis[Fnac]': {required: true, email: true}
         }
     });
 
@@ -61,9 +74,10 @@
         form.find('input[name^="identis[Nombres]"]').val(data['Nombres']);
         form.find('input[name^="identis[Ape1]"]').val(data['Ape1']);
         form.find('input[name^="identis[Ape2]"]').val(data['Ape2']);
-        form.find('input[name^="identis[Sexo]"]').val(data['Sexo']);
-        form.find('input[name^="contacto[telefono]"]').val(data['telefono_personal']);
-        form.find('input[name^="contacto[email]"]').val(data['email_personal']);
+        form.find('select[name^="identis[tdocu]"]').val(data['tdocu']);
+        form.find('select[name^="identis[Sexo]"]').val(data['Sexo']);
+        form.find('input[name^="identis[telefono]"]').val(data['telefono_personal']);
+        form.find('input[name^="identis[email]"]').val(data['email_personal']);
     };
 
     var check_user = function (data, btn) {
@@ -87,6 +101,7 @@
                     $modalCreateUser.modal({backdrop: 'static'}); // no cerrar el modal al hacer click fuera de el
                 }
                 btn.prop({disabled: false}).html('Buscar');
+                noty({type: 'information', text: response.message, timeout: 5000}).show();
             } else {
                 noty({type: 'error', text: response.message, timeout: 5000}).show();
                 btn.prop({disabled: false}).html('Buscar');
@@ -99,6 +114,21 @@
         });
     };
 
+    $("#cboTipoDoc").on("change", function () {
+        if ($(this).val() == "CE") {
+            $("#row_pais").removeClass("d-none");
+        } else {
+            $("#row_pais").addClass("d-none");
+        }
+    });
+    $("#cboSituacion").on("change", function () {
+        var situacion = $(this).val();
+        if (situacion == "ESTUDIANTE" || situacion == "PASANTIA ESTUDIANTE") {
+            $("#row_modalidad").removeClass("d-none");
+        } else {
+            $("#row_modalidad").addClass("d-none");
+        }
+    });
     var create_user = function (data, btn) {
         btn.prop({disabled: true}).html('Cargando...');
         $.post(controllerUrl + '/save', data, function (response) {

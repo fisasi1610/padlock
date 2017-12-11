@@ -18,7 +18,7 @@ class UserAsset {
             "css"     => [],
             "depends" => [
                 'insite\asset\BootstrapTable',
-                'insite\asset\JqueryValidation'
+                'insite\asset\JqueryValidation',
             ],
         ]
     ];
@@ -29,13 +29,13 @@ class UserAsset {
      */
     public $action = [
         "manage.index" => [
-            "js"      => ["manage/index","manage/list"],
+            "js"      => ["manage/index", "manage/list"],
             "css"     => [],
             "depends" => [
-                
+                'insite\asset\BootstrapDatepicker'
             ],
         ],
-        "manage.edit" => [
+        "manage.edit"  => [
             "js"      => ["manage/edit"],
             "css"     => [],
             "depends" => ['app\assets\GlobalAsset'],

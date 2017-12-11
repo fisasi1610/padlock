@@ -49,6 +49,7 @@ class Chacad {
         $sql = "select 
                     persona.CodIden
                     ,persona.CodPer as dni
+                    ,docu.CodTDocu as tdocu
                     ,RTRIM(persona.Nombres) as Nombres
                     ,RTRIM(persona.Ape1) as Ape1
                     ,RTRIM(persona.Ape2) as Ape2
@@ -58,6 +59,9 @@ class Chacad {
                     ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'C1') as telefono_personal
                     ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'E1') as email_personal
                 from dbo.Identis persona
+                inner join Docus docu on (
+                	docu.CodPer = persona.CodPer
+                )
                 where persona.CodPer = '{$codPer}';";
 
         $command = Yii::$app->chacad->createCommand($sql);
@@ -71,6 +75,79 @@ class Chacad {
         $command = Yii::$app->chacad->createCommand($sql);
         $data    = $command->queryScalar();
         return $data;
+    }
+
+    /**
+     * @Janet S.R. 21/04/2016
+     * Función que contiene procedimiento almacenado que registra en las tablas de bdi
+     * @param type $v array de registros
+     */
+    public static function registerAccount($v) {
+        $state          = new stdClass();
+        $state->error   = false;
+        $state->message = "Procesado correctamente";
+        $connection     = Yii::$app->chacad;
+        $transaccion    = $connection->beginTransaction();
+        try {
+            $R            = $v['NUMERO_LISTA'];
+            $NR           = $v['NR'];
+            $APE1         = strtoupper(ltrim(rtrim($v['APE1'])));
+            $APE2         = strtoupper(ltrim(rtrim($v['APE2'])));
+            $NOMBRES      = strtoupper(ltrim(rtrim($v['NOMBRES'])));
+            $FNACIO       = $v['FNAC'];
+            $SEXO         = $v['SEXO'];
+            $codtMoti     = '*';
+            $CodUbiNac    = $v['CODUBINAC'];
+            $CodTDocu     = $v['TDOCU'];
+            $NDocu        = $v['NDOCU'];
+            $FEmision     = '';
+            $FExpira      = '';
+            $Direccion    = strtoupper(ltrim(rtrim($v['DIRECCION'])));
+            $localidad    = strtoupper($v['LOCALIDAD']);
+            $CodUbi       = $v['CODUBI'];
+            $activo       = $v['ACTCODPER'];
+            $coduni       = $v['CODUNI'];
+            $crealogin    = $v['CREALOGIN'];
+            $creacorreo   = $v['CREACORREO'];
+            $codTcom      = 'C1';
+            $valor        = ltrim(rtrim($v['C1']));
+            $codTcom1     = 'T1';
+            $valor1       = ltrim(rtrim($v['T1']));
+            $codTcom2     = 'E1';
+            $valor2       = ltrim(rtrim($v['E1']));
+            $codTcom3     = '**';
+            $valor3       = '??';
+            $salida       = '';
+            $salidacodper = '';
+
+            $strQuery = "EXEC dbo.SP_InsNew_regulares_registra '$R','$NR','$APE1','$APE2','$NOMBRES','$FNACIO','$SEXO','$codtMoti',"
+                    . "'$CodUbiNac','$CodTDocu','$NDocu','$FEmision','$FExpira','$Direccion','$localidad','$CodUbi',"
+                    . "'$activo','$coduni','$crealogin','$creacorreo','$codTcom','$valor','$codTcom1','$valor1','$codTcom2','$valor2','$codTcom3','$valor3','$salida','$salidacodper'";
+            $command  = $connection->createCommand($strQuery);
+            if (!$command->execute()) {
+                throw new Exception("Erro al registrar la cuenta - " . $command->getText(), 999);
+            }
+            $transaccion->commit();
+        } catch (Exception $e) {
+            $transaccion->rollback();
+            $state->error   = true;
+            $state->message = $e->getMessage();
+        }
+        return $state;
+    }
+
+    public static function getUnidad() {
+        $sql     = "SELECT RTRIM(LTRIM(CODUNI)) CODUNI, NomUni FROM UNIDAD WHERE CODUNI!='*****'";
+        $command = Yii::$app->chacad->createCommand($sql);
+
+        return $command->queryAll();
+    }
+
+    public static function getPais() {
+        $sql     = "SELECT RTRIM(LTRIM(CodUbi)) CodUbi, NomUbi FROM UBIS WHERE CodTUbi='P'";
+        $command = Yii::$app->chacad->createCommand($sql);
+
+        return $command->queryAll();
     }
 
 }

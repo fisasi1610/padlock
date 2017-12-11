@@ -63,5 +63,10 @@ class Constante {
      * 
      */
     const DEFAULT_PAGESIZE = 25;
+    const TYPE_PREGUNTA    = "TYPE_PREGUNTA";
+    const TYPE_DOCUMENTO   = "TYPE_DOCUMENTO";
+    const TYPE_SITUACION   = "TYPE_SITUACION";
+    const TYPE_MODALIDAD   = "TYPE_MODALIDAD";
+    const TYPE_GENERO      = "TYPE_GENERO";
 
 }

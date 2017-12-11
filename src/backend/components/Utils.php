@@ -2,7 +2,9 @@
 
 namespace app\components;
 
+use yii\helpers\ArrayHelper;
 use Yii;
+use app\models\General;
 
 /**
  * Utils es la clase creada para colocar funciones reutilizables
@@ -38,7 +40,7 @@ class Utils {
         }
         return $_GET[$nombreGet];
     }
-    
+
     /**
      * Concatenar los errores de validacion de un modelo. Estos se obtienen con $model->getErrors() y devuelve:
      *  [
@@ -55,9 +57,9 @@ class Utils {
      * @param array $errors
      * @return string
      */
-    public static function getErrorsText($errors){
+    public static function getErrorsText($errors) {
         $txt = '';
-        foreach ($errors as $attribute=>$messages){
+        foreach ($errors as $attribute => $messages) {
             $txt .= implode($messages);
         }
         return $txt;
@@ -65,6 +67,10 @@ class Utils {
 
     public static function generateToken($value) {
         return sha1(hash_hmac("sha1", $value, Constante::SECRET, true));
+    }
+
+    public static function systemTypeListData($type) { 
+        return ArrayHelper::map(General::getTypes($type), "id", "name");
     }
 
 }

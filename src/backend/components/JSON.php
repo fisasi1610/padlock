@@ -39,7 +39,7 @@ class JSON {
     }
 
     public static function formatting($data = []) {
-        $response = new stdClass;
+        $response = new \stdClass;
         if (!is_array($data)) {
             return utf8_encode($data);
         }
