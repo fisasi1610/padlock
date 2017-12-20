@@ -14,7 +14,7 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade in active show" id="card-tab-1" aria-expanded="true">
                 <div class="pdd-horizon-15 pdd-vertical-20">
-                    <?= $this->render("partials/_datos_generales", ["data" => $data, "chacad" => $chacad]); ?>
+                    <?= $this->render("partials/_datos_generales", ["data" => $data, "chacad" => $chacad, "log" => $log]); ?>
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="card-tab-2" aria-expanded="false">

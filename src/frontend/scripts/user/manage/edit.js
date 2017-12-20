@@ -157,7 +157,7 @@
             });
         }
     });
-    
+
     $("#md-manage-create-application").on("hidden.bs.modal", function () {
         $("#md-manage-create-application").find("#content-edit").addClass("d-none");
         $("#md-manage-create-application").find("#content-create").removeClass("d-none");
@@ -281,4 +281,14 @@
             }
         });
     };
+
+    $(".showModalError").on("click", function () {
+        var message = $(this).attr("data-message");
+        var step = $(this).attr("data-step");
+        console.log(message);
+        console.log(step);
+        swal({
+            html: '<div class="table-responsive"><table class="table table-bordered font-size-12"><tr><th>Paso</th><th>Mensaje</th></tr><tr><td>' + step + '</td><td>' + message + '</td></tr></table></div>'
+        });
+    });
 }(window.jQuery));

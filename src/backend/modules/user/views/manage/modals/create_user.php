@@ -20,13 +20,13 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Tipo Documento</label>
                                 <div class="col-md-9"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[tdocu]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_DOCUMENTO), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboTipoDoc"]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Tdocu]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_DOCUMENTO), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboTipoDoc"]); ?>
                                 </div>
                             </div>
                             <div class="form-group row d-none" id="row_pais">
                                 <label for="form-1-1" class="col-md-3 control-label">Pais Proveniente</label>
                                 <div class="col-md-9"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[pais]", "", app\components\UChacad::getPais(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Pais]", "", app\components\UChacad::getPais(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -65,38 +65,44 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Teléfono</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="identis[telefono]" autocomplete="off" placeholder="Teléfono">
+                                    <input type="text" class="form-control" name="identis[Telefono]" autocomplete="off" placeholder="Teléfono">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Email</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="identis[email]" autocomplete="off" placeholder="Email">
+                                    <input type="text" class="form-control" name="identis[Email]" autocomplete="off" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="form-1-1" class="col-md-3 control-label">Dirección</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="identis[Direccion]" autocomplete="off" placeholder="Email">
                                 </div>
                             </div>
                             <h3>Configuración</h3>
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-4 control-label">¿Acceso a la Red UPCH?</label>
                                 <div class="col-md-8"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[acceso]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Acceso]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-4 control-label">¿Correo UPCH?</label>
                                 <div class="col-md-8"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[correo_upch]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[CorreoUPCH]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_PREGUNTA), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-4 control-label">Situación</label>
                                 <div class="col-md-8"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[situacion]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_SITUACION), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboSituacion"]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Situacion]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_SITUACION), ["class" => "form-control", "prompt" => "Seleccione...", "id" => "cboSituacion"]); ?>
                                 </div>
                             </div>
                             <div class="form-group row d-none" id="row_modalidad">
                                 <label for="form-1-1" class="col-md-4 control-label">Modalidad</label>
                                 <div class="col-md-8"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[modalidad]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_MODALIDAD), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Modalidad]", "", app\components\Utils::systemTypeListData(app\components\Constante::TYPE_MODALIDAD), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -108,9 +114,14 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-4 control-label">Unidad Solicitante</label>
                                 <div class="col-md-8"> 
-                                    <?= yii\helpers\Html::dropDownList("identis[unidad]", "", app\components\UChacad::getUnidad(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
+                                    <?= yii\helpers\Html::dropDownList("identis[Unidad]", "", app\components\UChacad::getUnidad(), ["class" => "form-control", "prompt" => "Seleccione..."]); ?>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row d-none" id="message-content">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger" id="message-label"></div>
                         </div>
                     </div>
                     <div class="text-right">

@@ -2,7 +2,6 @@
 
 namespace app\modules\user\controllers;
 
-use app\modules\user\components\ManageUser;
 use app\modules\user\components\QUser;
 use app\modules\user\models\User;
 use app\modules\user\models\UserRecoveryOption;
@@ -10,7 +9,13 @@ use app\components\MainController;
 use app\components\JSON;
 use app\components\Utils;
 use app\components\Chacad;
-use app\models\Identis;
+use app\components\UChacad;
+use app\components\UIceberg;
+use app\components\USinu;
+use app\components\Google;
+use app\components\Constante;
+use app\components\ULog;
+use app\components\QLog;
 use yii\base\Exception;
 use Yii;
 
@@ -20,6 +25,58 @@ use Yii;
 class ManageController extends MainController {
 
     public $section_title = "Usuarios";
+
+    /**
+     * Comment
+     */
+    public function actionTest() {
+        $identis['Nombres'] = "Francisco";
+        $identis['Ape1']    = "Isasi";
+        $identis['Ape2']    = "Chiesa";
+        $resultado_correo   = Utils::generateCorporativeMail($identis);
+        Utils::show($identis);
+
+        Utils::show($resultado_correo, true);
+
+//
+//        $new_account   = [
+//            "primaryEmail" => "francisco.isasi@miasoftware.net",
+////            "primaryEmail" => "liz@miasoftware.com",
+//            "name"         => [
+//                "givenName"  => "Francisco",
+//                "familyName" => "Isasi"
+//            ],
+//            "emails"       => [
+////                [
+//                    "address" => "francisco.isasi@miasoftware.net",
+//                    "primary" => true
+////                    "type" => "custom",
+////                ],
+//            ],
+//            "password"     => "S12345678",
+//        ];
+//        $usuario_nuevo = Google::updateAccount("upch@miasoftware.net", $new_account);
+//        $usuario_nuevo = Google::createAccount($new_account);
+//        if ($usuario_nuevo->error) {
+//            Utils::show($usuario_nuevo->message);
+//        } else {
+//            Utils::show($usuario_nuevo->message);
+//            Utils::show($usuario_nuevo->data);
+//        }
+//        $usuario = Google::getAccount("liz@miasoftware.net");
+//        $usuario = Google::deleteAccount("francisco.isasi@miasoftware.net");
+//        $usuario = Google::activateAccount("francisco.isasi@miasoftware.net");
+//        if ($usuario->error) {
+//            Utils::show($usuario->message);
+//        } else {
+//            Utils::show($usuario);
+//        }
+//        $directory = new \Google_Service_Directory(Yii::$app->google->getService());
+//
+//        $deleted_users = $directory->users->listUsers(["domain"=> \app\components\Constante::EMPRESA_DOMINIO,"showDeleted" => "true"]);
+//        
+//        Utils::show($deleted_users->users);
+    }
 
     public function actionIndex() {
         $this->current_title = "Listado";
@@ -55,6 +112,7 @@ class ManageController extends MainController {
             $user         = User::find()->where(['cod_per' => $cod_per, 'state' => 1])->one();
             $json_message = "";
 
+            $response['data']['cod_per'] = $cod_per;
             if ($user) {
                 $response['data']['exist']   = true;
                 $response['data']['id_user'] = $user->id_user;
@@ -84,13 +142,18 @@ class ManageController extends MainController {
      */
     public function actionSave() {
         $transaction = Yii::$app->db->beginTransaction();
+        $log         = false;
+        $results     = [
+            "chacad"  => false,
+            "iceberg" => false,
+            "sinu"    => false
+        ];
         try {
             if (!Yii::$app->request->isAjax) {
                 throw new Exception("El metodo no esta permitido", 403);
             }
 
-            $identis  = Yii::$app->request->post("identis");
-            $contacto = Yii::$app->request->post("contacto");
+            $identis = Yii::$app->request->post("identis");
 
             // registrar usuario en padlock
             $model               = new User();
@@ -108,8 +171,8 @@ class ManageController extends MainController {
 
             $modelRec          = new UserRecoveryOption();
             $modelRec->id_user = $model->id_user;
-            $modelRec->email   = $contacto['email'];
-            $modelRec->number  = $contacto['telefono'];
+            $modelRec->email   = $identis['Email'];
+            $modelRec->number  = $identis['Telefono'];
             $modelRec->state   = 1;
 
             if (!$modelRec->save()) {
@@ -117,21 +180,114 @@ class ManageController extends MainController {
             }
             // si el usuario existe en chacad
             if (isset($identis['CodIden']) && $identis['CodIden'] != '') {
-                $chacad             = Identis::findOne($identis['CodIden']);
-                $chacad->attributes = $identis;
+                //Proceso de actualización de datos CHACAD, SINU, ICEBERG
             } else {
-                $chacad             = new Identis();
-                $chacad->attributes = $identis;
-                $chacad->CodIden    = Chacad::generateIdentisCodIden();
-                $chacad->FReg       = date('Y-m-d h:i:s');
+                //Proceso de registro de datos CHACAD, SINU, ICEBERG
+                $identis['NUMERO_LISTA'] = 0;
+                $identis['NR']           = 0;
+                $identis['LOCALIDAD']    = "";
+                $identis['ACTCODPER']    = 0;
+                if ($identis['Pais'] == "") {
+                    $identis['CODUBINAC'] = '150101';
+                    $identis['CODUBI']    = '150101';
+                } else {
+                    $identis['CODUBINAC'] = $identis['Pais'];
+                    $identis['CODUBI']    = $identis['Pais'];
+                }
+                $resultado = UChacad::registrarUsuario($identis);
+                if ($resultado->error) {
+                    $results['chacad'][] = [
+                        "message" => $resultado->message,
+                        "step"    => Constante::REGISTRO_USUARIO_CHACAD
+                    ];
+
+                    $log = true;
+//                    throw new Exception('[Error al crear los datos en chacad] ' . $resultado->message, 900);
+                }
+
+                if ($identis['Acceso'] == "SI") {
+                    //Pendiente que el piurano nos de el componente para registro en AD.
+                }
+                if ($identis['CorreoUPCH'] == "SI") {
+                    $resultado_correo = Utils::generateCorporativeMail($identis);
+                    if ($resultado_correo->error) {
+                        throw new Exception('[Error al generar correo institucional] ' . $resultado->message, 900);
+                    }
+
+                    $identis['CORREO_UPCHPE'] = $resultado_correo->message;
+
+                    $resultado_chacad = UChacad::registrarTmpCorre($identis);
+                    if ($resultado_chacad->error) {
+                        $results['chacad'][] = [
+                            "message" => $resultado_chacad->message,
+                            "step"    => Constante::REGISTRO_CORREO_CHACAD
+                        ];
+
+                        $log = true;
+//                        throw new Exception('[Error al crear los datos tmpcorre en chacad] ' . $resultado_chacad->message, 900);
+                    }
+                    $identis['MIGRA'] = $identis['CodPer'];
+
+                    $resultado_iceberg = UIceberg::registrarUsuario($identis);
+                    if ($resultado_iceberg->error) {
+                        $results['iceberg'] = [
+                            "message" => $resultado_iceberg->message,
+                            "step"    => Constante::REGISTRO_USUARIO_ICEBERG
+                        ];
+
+                        $log = true;
+//                        throw new Exception('[Error al crear los datos en iceberg] ' . $resultado_iceberg->message, 900);
+                    }
+
+                    switch ($identis['Situacion']) {
+                        case 'ESTUDIANTE':
+                            $identis['TIPO_PERSONA'] = 1;
+                            break;
+                        case 'INVESTIGADOR':
+                            $identis['TIPO_PERSONA'] = 1;
+                            break;
+                        case 'VISITANTE':
+                            $identis['TIPO_PERSONA'] = 1;
+                            break;
+                        case 'NO DOCENTE':
+                            $identis['TIPO_PERSONA'] = 2;
+                            break;
+                        case 'DOCENTE':
+                            $identis['TIPO_PERSONA'] = 3;
+                            break;
+                        case 'PRACTICANTE':
+                            $identis['TIPO_PERSONA'] = 2;
+                            break;
+                        default:
+                            $identis['TIPO_PERSONA'] = 1;
+                            break;
+                    }
+                    $resultado_sinu = USinu::registrarUsuario($identis);
+                    if ($resultado_sinu->error) {
+                        $results['sinu'] = [
+                            "message" => $resultado_sinu->message,
+                            "step"    => Constante::REGISTRO_USUARIO_SINU
+                        ];
+
+                        $log = true;
+//                        throw new Exception('[Error al crear los datos en sinu] ' . $resultado_sinu->message, 900);
+                    }
+                }
             }
 
-//            if (!$chacad->save()) {
-//                throw new Exception('[Error al crear/actualizar datos en chacad] ' . Utils::getErrorsText($chacad->getErrors()), 900);
-//            }
+            if ($log) {
+                ULog::register($model->id_user, "user", "create", json_encode($results));
+                //Cambiando el estado del usuario a Deshabilitado
+                $model->state_user = 2;
+
+                if (!$model->update()) {
+                    throw new Exception('[Error al actualizar usuario] ' . Utils::getErrorsText($model->getErrors()), 900);
+                }
+            }
 
             $transaction->commit();
             $response['data']['id_user'] = $model->id_user;
+            $response['data']['results'] = $results;
             JSON::response(FALSE, 200, "Usuario registrado con éxito", $response);
         } catch (Exception $ex) {
             $transaction->rollBack();
@@ -147,8 +303,9 @@ class ManageController extends MainController {
     public function actionEdit($id) {
         $data                = QUser::getByPk($id);
         $chacad              = Chacad::getDatosPersonales($data['cod_per']);
+        $log                 = QLog::get($id, "user", "create");
         $this->current_title = $chacad['nombre_persona'];
-        return $this->render('edit', ['data' => $data, 'chacad' => $chacad]);
+        return $this->render('edit', ['data' => $data, 'chacad' => $chacad, "log" => $log]);
     }
 
     /**
@@ -172,7 +329,7 @@ class ManageController extends MainController {
                     $modelRec             = UserRecoveryOption::findOne($recovery['id_recovery']);
                     $modelRec->id_user    = $id_user;
                     $modelRec->attributes = $recovery;
-                    if(!$modelRec->update()){
+                    if (!$modelRec->update()) {
                         throw new Exception('[Error al actualizar los datos de recuperación del usuario] ' . Utils::getErrorsText($modelRec->getErrors()), 900);
                     }
                     break;

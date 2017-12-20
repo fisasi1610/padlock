@@ -8,7 +8,8 @@
         "yiisoft/yii2-gii": "^2.0",
         "yiisoft/yii2-debug": "^2.0",
         "insite/yii2-gii": "dev-master",
-        "insite/yii2-theme-espire": "dev-master"
+        "insite/yii2-theme-espire": "dev-master",
+        "idk/yii2-google-apiclient": "^1.1"
     },
     "authors": [
         {

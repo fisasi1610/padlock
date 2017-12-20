@@ -40,4 +40,15 @@ class UChacad {
         return ArrayHelper::map($paises, "CodUbi", "NomUbi");
     }
 
+    /**
+     * Comment
+     */
+    public static function registrarUsuario($identis) {
+        return Chacad::registrarUsuario($identis);
+    }
+    
+    public static function registrarTmpCorre($identis) {
+        return Chacad::registrarTmpCorre($identis);
+    }
+
 }

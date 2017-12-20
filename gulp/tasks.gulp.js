@@ -48,6 +48,11 @@ module.exports = ((gulp, config) => {
                 .pipe(gulp.dest(dest))
                 .pipe(plugins.if(!config.isProd, reload(config.bSyncReload)));
     };
+    
+    var _json = (src, dest) => {
+        return gulp.src(src)
+                .pipe(gulp.dest(dest));
+    };
 
     var js = () => {
         gulp.task('js', (cb) => _js(['./src/frontend/scripts/**/*.js'], './dist/web/static/js/'));
@@ -58,6 +63,7 @@ module.exports = ((gulp, config) => {
 
     var backend = () => {
         gulp.task('backend', (cb) => _php(['./src/backend/**/*.php'], './dist/'));
+        gulp.task('json', (cb) => _json(['./src/backend/**/*.json'], './dist/'));
     };
 
     var frontend = () => {
@@ -111,7 +117,7 @@ module.exports = ((gulp, config) => {
                         _css(src, dest);
                     });
                 });
-
+               
             });
         }
     };

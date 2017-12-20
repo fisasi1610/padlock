@@ -9,6 +9,8 @@
 namespace app\components;
 
 use Yii;
+use app\components\Fecha;
+use yii\db\Exception;
 
 /**
  * Description of Chacad
@@ -60,7 +62,7 @@ class Chacad {
                     ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'E1') as email_personal
                 from dbo.Identis persona
                 inner join Docus docu on (
-                	docu.CodPer = persona.CodPer
+                        docu.CodPer = persona.CodPer
                 )
                 where persona.CodPer = '{$codPer}';";
 
@@ -82,51 +84,82 @@ class Chacad {
      * Función que contiene procedimiento almacenado que registra en las tablas de bdi
      * @param type $v array de registros
      */
-    public static function registerAccount($v) {
-        $state          = new stdClass();
+    public static function registrarUsuario($v) {
+        $state          = new \stdClass();
         $state->error   = false;
         $state->message = "Procesado correctamente";
         $connection     = Yii::$app->chacad;
-        $transaccion    = $connection->beginTransaction();
+//        $transaccion    = $connection->beginTransaction();
         try {
-            $R            = $v['NUMERO_LISTA'];
-            $NR           = $v['NR'];
-            $APE1         = strtoupper(ltrim(rtrim($v['APE1'])));
-            $APE2         = strtoupper(ltrim(rtrim($v['APE2'])));
-            $NOMBRES      = strtoupper(ltrim(rtrim($v['NOMBRES'])));
-            $FNACIO       = $v['FNAC'];
-            $SEXO         = $v['SEXO'];
+            $R            = $v['NUMERO_LISTA']; //Campo Utilizado por el compendio
+            $NR           = $v['NR']; //Campo Utilizado por el compendio
+            $APE1         = strtoupper(ltrim(rtrim($v['Ape1'])));
+            $APE2         = strtoupper(ltrim(rtrim($v['Ape2'])));
+            $NOMBRES      = strtoupper(ltrim(rtrim($v['Nombres'])));
+            $FNACIO       = Fecha::format($v['Fnac'], "Y-m-d");
+            $SEXO         = $v['Sexo'];
             $codtMoti     = '*';
             $CodUbiNac    = $v['CODUBINAC'];
-            $CodTDocu     = $v['TDOCU'];
-            $NDocu        = $v['NDOCU'];
+            $CodTDocu     = $v['Tdocu'];
+            $NDocu        = $v['CodPer'];
             $FEmision     = '';
             $FExpira      = '';
-            $Direccion    = strtoupper(ltrim(rtrim($v['DIRECCION'])));
+            $Direccion    = strtoupper(ltrim(rtrim($v['Direccion'])));
             $localidad    = strtoupper($v['LOCALIDAD']);
             $CodUbi       = $v['CODUBI'];
             $activo       = $v['ACTCODPER'];
-            $coduni       = $v['CODUNI'];
-            $crealogin    = $v['CREALOGIN'];
-            $creacorreo   = $v['CREACORREO'];
+            $coduni       = $v['Unidad'];
+            $crealogin    = $v['Acceso'];
+            $creacorreo   = $v['CorreoUPCH'];
             $codTcom      = 'C1';
-            $valor        = ltrim(rtrim($v['C1']));
+            $valor        = ltrim(rtrim($v['Telefono']));
             $codTcom1     = 'T1';
-            $valor1       = ltrim(rtrim($v['T1']));
+            $valor1       = ltrim(rtrim($v['Telefono']));
             $codTcom2     = 'E1';
-            $valor2       = ltrim(rtrim($v['E1']));
+            $valor2       = ltrim(rtrim($v['Email']));
             $codTcom3     = '**';
             $valor3       = '??';
             $salida       = '';
             $salidacodper = '';
 
-            $strQuery = "EXEC dbo.SP_InsNew_regulares_registra '$R','$NR','$APE1','$APE2','$NOMBRES','$FNACIO','$SEXO','$codtMoti',"
+            $strQuery  = "EXEC dbo.SP_InsNew_regulares_registra '$R','$NR','$APE1','$APE2','$NOMBRES','$FNACIO','$SEXO','$codtMoti',"
                     . "'$CodUbiNac','$CodTDocu','$NDocu','$FEmision','$FExpira','$Direccion','$localidad','$CodUbi',"
                     . "'$activo','$coduni','$crealogin','$creacorreo','$codTcom','$valor','$codTcom1','$valor1','$codTcom2','$valor2','$codTcom3','$valor3','$salida','$salidacodper'";
-            $command  = $connection->createCommand($strQuery);
-            if (!$command->execute()) {
-                throw new Exception("Erro al registrar la cuenta - " . $command->getText(), 999);
+            $command   = $connection->createCommand($strQuery);
+            $resultado = $command->queryScalar();
+            if ($resultado == 1) {
+                throw new Exception("Error al ejecutar procedure: {$strQuery}", 900);
             }
+//            $transaccion->commit();
+        } catch (Exception $e) {
+//            $transaccion->rollback();
+            $state->error   = true;
+            $state->message = $e->getMessage();
+        }
+        return $state;
+    }
+
+    /**
+     * @Janet S.R. 20/06/2016
+     * Función que inserta en tmpcorreo
+     * @param type $v array de cuentas
+     */
+    public function registrarTmpCorre($v) {
+        $state          = new \stdClass();
+        $state->error   = false;
+        $state->message = "Procesado correctamente";
+        $connection     = Yii::$app->chacad;
+        $transaccion    = $connection->beginTransaction();
+        try {
+            $CORREO    = $v['CORREO_UPCHPE'];
+            $APELLIDOS = $v['Ape1'];
+            $NOMBRES   = $v['Nombres'];
+            $CODPER    = $v['CodPer'];
+            //$NDOCU      = $v['NDOCU'];
+
+            $strQuery = "EXEC dbo.SP_RegistraTMPCORRE '$CORREO','$APELLIDOS','$NOMBRES','$CODPER',''";
+            $command  = $connection->createCommand($strQuery);
+            $command->execute();
             $transaccion->commit();
         } catch (Exception $e) {
             $transaccion->rollback();

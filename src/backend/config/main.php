@@ -3,6 +3,8 @@
 $params  = require(__DIR__ . '/params.php');
 $db      = require(__DIR__ . '/db.php');
 $chacad  = require(__DIR__ . '/chacad.php');
+$iceberg = require(__DIR__ . '/iceberg.php');
+$sinu    = require(__DIR__ . '/sinu.php');
 $modules = require(__DIR__ . '/modules.php');
 $aliases = require(__DIR__ . '/aliases.php');
 
@@ -56,6 +58,13 @@ $config = [
         ],
         'db'           => $db,
         'chacad'       => $chacad,
+        'iceberg'      => $iceberg,
+        'sinu'         => $sinu,
+        'google'       => [
+            'class'            => 'idk\yii2\google\apiclient\components\GoogleApiClient',
+            'credentialsPath'  => '@runtime/google-apiclient/admin_71f528e0-5eb1-4a4d-8a8e-c5938b579ff5.json',
+            'clientSecretPath' => '@runtime/google-apiclient/secret.json',
+        ],
         'urlManager'   => [
             'enablePrettyUrl' => true,
             'showScriptName'  => false,

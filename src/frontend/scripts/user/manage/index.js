@@ -5,6 +5,8 @@
     var $btnAddUser = $('#add-user');
     var $modalCheckUser = $('#md-manage-check-user');
     var $modalCreateUser = $('#md-manage-create-user');
+    var $messageContent = $('#message-content');
+    var $messageLabel = $('#message-label');
 
     //$('.datepicker-2').datepicker();
 
@@ -59,11 +61,11 @@
             'identis[Ape2]': {required: true},
             'identis[telefono]': {required: true},
             'identis[email]': {required: true, email: true},
-            'identis[acceso]': {required: true, email: true},
-            'identis[correo_upch]': {required: true, email: true},
-            'identis[situacion]': {required: true, email: true},
-            'identis[Fexp]': {required: true, email: true},
-            'identis[Fnac]': {required: true, email: true}
+            'identis[acceso]': {required: true},
+            'identis[correo_upch]': {required: true},
+            'identis[situacion]': {required: true},
+            'identis[Fexp]': {required: true},
+            'identis[Fnac]': {required: true}
         }
     });
 
@@ -99,6 +101,9 @@
                         update_form_with_chacad(response.data.chacad.data);
                     }
                     $modalCreateUser.modal({backdrop: 'static'}); // no cerrar el modal al hacer click fuera de el
+                    var form = $modalCreateUser.find('#form-create-user');
+                    console.log(response.data.cod_per);
+                    form.find('input[name^="identis[CodPer]"]').val(response.data.cod_per);
                 }
                 btn.prop({disabled: false}).html('Buscar');
                 noty({type: 'information', text: response.message, timeout: 5000}).show();
@@ -133,7 +138,22 @@
         btn.prop({disabled: true}).html('Cargando...');
         $.post(controllerUrl + '/save', data, function (response) {
             if (!response.error) {
-                location.href = controllerUrl + '/edit?id=' + response.data.id_user;
+                if (response.data.results.chacad) {
+                    $messageContent.removeClass("d-none");
+                    var message_error = "";
+                    $.each(response.data.results.chacad, function (key, ele) {
+                        var tipo_error = "";
+                        if (ele.step == 1) {
+                            tipo_error = "Registro de Usuario";
+                        } else if (ele.step == 2) {
+                            tipo_error = "Registro de Correo";
+                        }
+                        message_error += "Error al realizar el " + tipo_error + " en CHACAD<br/>";
+                    });
+                    $messageLabel.empty().html(message_error);
+                } else {
+                    location.href = controllerUrl + '/edit?id=' + response.data.id_user;
+                }
             } else {
                 noty({type: 'error', text: response.message, timeout: 5000}).show();
                 btn.prop({disabled: false}).html('Guardar');

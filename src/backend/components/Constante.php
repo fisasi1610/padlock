@@ -24,6 +24,16 @@ class Constante {
     const EMPRESA_WEBSITE = "http://www.cayetano.edu.pe/cayetano/es/";
 
     /**
+     * @const Dominio de la empresa
+     */
+    const EMPRESA_DOMINIO = "miasoftware.net";
+
+    /**
+     * @const Dominio Secundario de la empresa
+     */
+    const EMPRESA_DOMINIO_SECUNDARIO = "insite.pe";
+
+    /**
      * @const Nombre del proyecto completo
      */
     const PROYECTO = "INTRANET::PADLOCK";
@@ -68,5 +78,13 @@ class Constante {
     const TYPE_SITUACION   = "TYPE_SITUACION";
     const TYPE_MODALIDAD   = "TYPE_MODALIDAD";
     const TYPE_GENERO      = "TYPE_GENERO";
+
+    /**
+     * 
+     */
+    const REGISTRO_USUARIO_CHACAD  = 1;
+    const REGISTRO_CORREO_CHACAD   = 2;
+    const REGISTRO_USUARIO_ICEBERG = 3;
+    const REGISTRO_USUARIO_SINU    = 4;
 
 }
