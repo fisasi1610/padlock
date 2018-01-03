@@ -161,7 +161,7 @@ class ManageController extends MainController {
             $model->cod_per      = $identis['CodPer'];
             $model->id_type_user = 1;
             $model->username     = $identis['CodPer'];
-            $model->password     = 'myPass';
+            $model->password     = "X{$identis['CodPer']}";
             $model->state_user   = 1;
             $model->state        = 1;
 
@@ -207,12 +207,36 @@ class ManageController extends MainController {
 
                 if ($identis['Acceso'] == "SI") {
                     //Pendiente que el piurano nos de el componente para registro en AD.
+                    
                 }
                 if ($identis['CorreoUPCH'] == "SI") {
                     $resultado_correo = Utils::generateCorporativeMail($identis);
                     if ($resultado_correo->error) {
                         throw new Exception('[Error al generar correo institucional] ' . $resultado->message, 900);
                     }
+
+                    //Creacion de cuenta en google.
+//                    $new_account   = [
+//                        "primaryEmail" => $resultado_correo->message,
+//                        "name"         => [
+//                            "givenName"  => strtoupper(ltrim(rtrim($identis['Nombres']))),
+//                            "familyName" => strtoupper(ltrim(rtrim($identis['Ape1']))) . " " . strtoupper(ltrim(rtrim($identis['Ape2'])))
+//                        ],
+//                        "emails"       => [
+//                            "address" => $resultado_correo->message,
+//                            "primary" => true
+//                        ],
+//                        "password"     => $model->password,
+//                    ];
+//                    $usuario_nuevo = Google::createAccount($new_account);
+//                    if ($usuario_nuevo->error) {
+//                        $results['google'] = [
+//                            "message" => $usuario_nuevo->message,
+//                            "step"    => Constante::REGISTRO_USUARIO_GOOGLE
+//                        ];
+//
+//                        $log = true;
+//                    }
 
                     $identis['CORREO_UPCHPE'] = $resultado_correo->message;
 

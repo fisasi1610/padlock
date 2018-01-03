@@ -86,5 +86,6 @@ class Constante {
     const REGISTRO_CORREO_CHACAD   = 2;
     const REGISTRO_USUARIO_ICEBERG = 3;
     const REGISTRO_USUARIO_SINU    = 4;
+    const REGISTRO_USUARIO_GOOGLE  = 5;
 
 }

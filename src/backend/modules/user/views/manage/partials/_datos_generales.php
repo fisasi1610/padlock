@@ -73,7 +73,7 @@
                             <?php
                         else:
                             if ($value) {
-                                $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : "Registro de Usuario Sinu";
+                                $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : ($value->step == \app\components\Constante::REGISTRO_USUARIO_SINU) ? "Registro de Usuario Sinu" : "Registro de Usuario Google";
                             }
                             ?>
                             <td><?= (!$value) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $value->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>" ?></td>

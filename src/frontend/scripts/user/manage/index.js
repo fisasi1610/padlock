@@ -151,9 +151,11 @@
                         message_error += "Error al realizar el " + tipo_error + " en CHACAD<br/>";
                     });
                     $messageLabel.empty().html(message_error);
-                } else {
-                    location.href = controllerUrl + '/edit?id=' + response.data.id_user;
                 }
+                noty({type: 'success', text: response.message, timeout: 2000}).show();
+                setTimeout(function () {
+                    location.href = controllerUrl + '/edit?id=' + response.data.id_user;
+                }, 2000);
             } else {
                 noty({type: 'error', text: response.message, timeout: 5000}).show();
                 btn.prop({disabled: false}).html('Guardar');
