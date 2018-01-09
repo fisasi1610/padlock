@@ -66,14 +66,14 @@
                     foreach ($data as $key => $value):
                         if (is_array($value)):
                             foreach ($value as $k => $v):
-                                $step = ($v->step == \app\components\Constante::REGISTRO_USUARIO_CHACAD) ? "Registro de Usuario Chacad" : "Registro de Correo Chacad";
+                                $step = ($v->step == \app\components\Constante::REGISTRO_USUARIO_CHACAD) ? "Registro de Usuario Chacad" : ($v->step == \app\components\Constante::EDICION_USUARIO_CHACAD) ? "Actualizacion de Usuario Chacad" : "Actualizacion de Correo Chacad";
                                 ?>
                                 <td><?= (!$v->message) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $v->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>"; ?></td>
                             <?php endforeach; ?>
                             <?php
                         else:
                             if ($value) {
-                                $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : ($value->step == \app\components\Constante::REGISTRO_USUARIO_SINU) ? "Registro de Usuario Sinu" : "Registro de Usuario Google";
+                                $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : ($value->step == \app\components\Constante::REGISTRO_USUARIO_SINU) ? "Registro de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_SINU) ? "Edicion de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_ICEBERG) ? "Edicion de Usuario Iceberg" : "Registro de Usuario Google";
                             }
                             ?>
                             <td><?= (!$value) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $value->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>" ?></td>

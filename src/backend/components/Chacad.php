@@ -57,12 +57,18 @@ class Chacad {
                     ,RTRIM(persona.Ape2) as Ape2
                     ,persona.FNacio
                     ,persona.Sexo
+                    ,correo.account_name as correo_institucional
                     ,(RTRIM(persona.Nombres)+' '+RTRIM(persona.Ape1)+' '+RTRIM(persona.Ape2)) as nombre_persona
-                    ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'C1') as telefono_personal
+                    ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'T1') as telefono_personal
+                    ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'C1') as celular_personal
                     ,(select RTRIM(Valor) from dbo.MedioCom where CodPer = persona.CodPer and CodTCom = 'E1') as email_personal
+                    ,(select RTRIM(Direccion) from dbo.Dires where CodPer = persona.CodPer) as direccion_personal
                 from dbo.Identis persona
                 inner join Docus docu on (
                         docu.CodPer = persona.CodPer
+                )
+                inner join dbo.tmpcorre correo on (
+                    correo.codper = persona.CodPer
                 )
                 where persona.CodPer = '{$codPer}';";
 
@@ -112,7 +118,7 @@ class Chacad {
             $crealogin    = $v['Acceso'];
             $creacorreo   = $v['CorreoUPCH'];
             $codTcom      = 'C1';
-            $valor        = ltrim(rtrim($v['Telefono']));
+            $valor        = ltrim(rtrim($v['Celular']));
             $codTcom1     = 'T1';
             $valor1       = ltrim(rtrim($v['Telefono']));
             $codTcom2     = 'E1';
@@ -133,6 +139,44 @@ class Chacad {
 //            $transaccion->commit();
         } catch (Exception $e) {
 //            $transaccion->rollback();
+            $state->error   = true;
+            $state->message = $e->getMessage();
+        }
+        return $state;
+    }
+
+    /**
+     * @Janet S.R. 21/04/2016
+     * Función que contiene procedimiento almacenado que edita en las tablas de bdi
+     * @param type $v array de registros
+     */
+    public static function editarUsuario($v) {
+        $state          = new \stdClass();
+        $state->error   = false;
+        $state->message = "Procesado correctamente";
+        $connection     = Yii::$app->chacad;
+        try {
+            $R         = $v['NUMERO_LISTA'];
+            $NR        = $v['NR'];
+            $CODPER    = ltrim(rtrim($v['CodPer']));
+            $APE1      = isset($v['Ape1']) ? utf8_decode(strtoupper(ltrim(rtrim($v['Ape1'])))) : '';
+            $APE2      = isset($v['Ape2']) ? utf8_decode(strtoupper(ltrim(rtrim($v['Ape2'])))) : '';
+            $NOMBRES   = isset($v['Nombres']) ? utf8_decode(strtoupper(ltrim(rtrim($v['Nombres'])))) : '';
+            $FNACIO    = isset($v['Fnac']) ? $v['Fnac'] : '';
+            $SEXO      = isset($v['Sexo']) ? ltrim(rtrim($v['Sexo'])) : '';
+            $CODUBINAC = isset($v['CODUBINAC']) ? utf8_decode(ltrim(rtrim($v['CODUBINAC']))) : '';
+            $DIRECCION = isset($v['Direccion']) ? utf8_decode(ltrim(rtrim($v['Direccion']))) : '';
+            $CODUBI    = isset($v['CODUBI']) ? utf8_decode(ltrim(rtrim($v['CODUBI']))) : '';
+            $CODUNI    = isset($v['Unidad']) ? utf8_decode(ltrim(rtrim($v['Unidad']))) : '';
+            $C1        = isset($v['Celular']) ? utf8_decode(ltrim(rtrim($v['Celular']))) : '';
+            $T1        = isset($v['Telefono']) ? utf8_decode(ltrim(rtrim($v['Telefono']))) : '';
+            $E1        = isset($v['Email']) ? utf8_decode(ltrim(rtrim($v['Email']))) : '';
+
+            $strQuery = "EXEC dbo.SP_EditPerfil '$R','$NR','$CODPER','$APE1','$APE2','$NOMBRES','$FNACIO','$SEXO','$CODUBINAC','$DIRECCION','$CODUBI',"
+                    . "'$CODUNI','$C1','$T1','$E1'";
+            $command  = $connection->createCommand($strQuery);
+            $command->execute();
+        } catch (Exception $e) {
             $state->error   = true;
             $state->message = $e->getMessage();
         }
@@ -181,6 +225,14 @@ class Chacad {
         $command = Yii::$app->chacad->createCommand($sql);
 
         return $command->queryAll();
+    }
+    
+    public static function getUbisNombre($dato) {
+        $connection = Yii::$app->chacad;
+        $sql        = " SELECT NOMUBI FROM UBIS WHERE CODUBI='{$dato}'";
+        $command    = $connection->createCommand($sql);
+        $lstResult  = $command->queryScalar();
+        return $lstResult;
     }
 
 }

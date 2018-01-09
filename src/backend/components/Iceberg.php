@@ -53,6 +53,38 @@ class Iceberg {
         return $state;
     }
 
+    public static function editarUsuario($v) {
+        $state          = new \stdClass();
+        $state->error   = false;
+        $state->message = "Procesado correctamente";
+        $connection     = Yii::$app->iceberg;
+        $transaction    = $connection->beginTransaction();
+        try {
+            $CODPER   = rtrim(ltrim($v['CodPer']));
+            $NOMBRES  = strtoupper(rtrim(ltrim($v['Nombres'])));
+            $APE1     = strtoupper(rtrim(ltrim($v['Ape1'])));
+            $APE2     = strtoupper(rtrim(ltrim($v['Ape2'])));
+            $GENERO   = rtrim(ltrim($v['Sexo']));
+            $FNAC     = date("d/m/Y", strtotime($v['Fnac']));
+            $DIR      = utf8_decode(rtrim(ltrim($v['Direccion'])));
+            $DIS      = strtoupper(ltrim(rtrim(Chacad::getUbisNombre($v['CODUBI']))));
+            $E1       = rtrim(ltrim($v['Email']));
+            $CORREO   = rtrim(ltrim($v['CORREO_UPCHPE']));
+            $strQuery = "BEGIN SP_UPDATE_ICEBERG_UPCH ('$CODPER','$APE1','$APE2','$NOMBRES','$FNAC','$GENERO','$DIR','$DIS','$E1','$CORREO'); END;";
+            $command  = $connection->createCommand($strQuery);
+            if (!$command->execute()) {
+                throw new Exception("Error al editar la cuenta Iceberg - " . $command->getText(), 999);
+            }
+            $transaction->commit();
+            self::actualizarContadoresIceberg();
+        } catch (Exception $e) {
+            $transaction->rollback();
+            $state->error   = true;
+            $state->message = $e->getMessage();
+        }
+        return $state;
+    }
+
     public static function actualizarContadoresIceberg() {
         $connection = Yii::$app->iceberg;
         $strQuery   = "declare

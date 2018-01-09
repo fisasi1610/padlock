@@ -37,13 +37,16 @@ class QLog {
     /**
      * Comment
      */
-    public static function get($pk_table, $table, $action) {
-        $sql = "SELECT * FROM log WHERE pk_table = :pk and `table` = :table and `action` = :action";
+    public static function get($pk_table, $table, $action = null) {
+        $sql_where = "";
+        if ($action != null) {
+            $sql_where = " and `action` = '{$action}";
+        }
+        $sql = "SELECT * FROM log WHERE pk_table = :pk and `table` = :table {$sql_where}";
 
         $command = Yii::$app->db->createCommand($sql);
         $command->bindParam(":pk", $pk_table, PDO::PARAM_INT);
         $command->bindParam(":table", $table, PDO::PARAM_STR);
-        $command->bindParam(":action", $action, PDO::PARAM_STR);
 
         return $command->queryOne();
     }

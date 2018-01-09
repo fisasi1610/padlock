@@ -23,5 +23,9 @@ class UIceberg {
     public static function registrarUsuario($identis) {
         return Iceberg::registrarUsuario($identis);
     }
+    
+    public static function editarUsuario($identis) {
+        return Iceberg::editarUsuario($identis);
+    }
 
 }

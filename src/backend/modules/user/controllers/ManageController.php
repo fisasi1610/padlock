@@ -166,34 +166,66 @@ class ManageController extends MainController {
             $model->state        = 1;
 
             if (!$model->save()) {
-                throw new Exception('[Error al crear usuario] ' . Utils::getErrorsText($model->getErrors()), 900);
+                throw new Exception('[Error al crear usuario en padlock] ' . Utils::getErrorsText($model->getErrors()), 900);
             }
 
             $modelRec          = new UserRecoveryOption();
             $modelRec->id_user = $model->id_user;
             $modelRec->email   = $identis['Email'];
-            $modelRec->number  = $identis['Telefono'];
+            $modelRec->number  = $identis['Celular'];
             $modelRec->state   = 1;
 
             if (!$modelRec->save()) {
                 throw new Exception('[Error al crear los datos de recuperación del usuario] ' . Utils::getErrorsText($modelRec->getErrors()), 900);
             }
+            $identis['NUMERO_LISTA'] = 0;
+            $identis['NR']           = 0;
+            $identis['LOCALIDAD']    = "";
+            $identis['ACTCODPER']    = 0;
+            if ($identis['Pais'] == "") {
+                $identis['CODUBINAC'] = '150101';
+                $identis['CODUBI']    = '150101';
+            } else {
+                $identis['CODUBINAC'] = $identis['Pais'];
+                $identis['CODUBI']    = $identis['Pais'];
+            }
             // si el usuario existe en chacad
             if (isset($identis['CodIden']) && $identis['CodIden'] != '') {
                 //Proceso de actualización de datos CHACAD, SINU, ICEBERG
+                $action                   = "update";
+                $identis['CORREO_UPCHPE'] = UChacad::getCorreoInstitucional($identis['CodPer']);
+                $resultado                = UChacad::editarUsuario($identis);
+                if ($resultado->error) {
+                    $results['chacad'][] = [
+                        "message" => $resultado->message,
+                        "step"    => Constante::EDICION_USUARIO_CHACAD
+                    ];
+
+                    $log = true;
+                }
+
+                $resultado_iceberg = UIceberg::editarUsuario($identis);
+                if ($resultado_iceberg->error) {
+                    $results['iceberg'] = [
+                        "message" => $resultado_iceberg->message,
+                        "step"    => Constante::EDICION_USUARIO_ICEBERG
+                    ];
+
+                    $log = true;
+                }
+
+                $resultado_sinu = USinu::editarUsuario($identis);
+                if ($resultado_sinu->error) {
+                    $results['sinu'] = [
+                        "message" => $resultado_sinu->message,
+                        "step"    => Constante::EDICION_USUARIO_SINU
+                    ];
+
+                    $log = true;
+                }
             } else {
                 //Proceso de registro de datos CHACAD, SINU, ICEBERG
-                $identis['NUMERO_LISTA'] = 0;
-                $identis['NR']           = 0;
-                $identis['LOCALIDAD']    = "";
-                $identis['ACTCODPER']    = 0;
-                if ($identis['Pais'] == "") {
-                    $identis['CODUBINAC'] = '150101';
-                    $identis['CODUBI']    = '150101';
-                } else {
-                    $identis['CODUBINAC'] = $identis['Pais'];
-                    $identis['CODUBI']    = $identis['Pais'];
-                }
+                $action    = "create";
                 $resultado = UChacad::registrarUsuario($identis);
                 if ($resultado->error) {
                     $results['chacad'][] = [
@@ -207,7 +239,6 @@ class ManageController extends MainController {
 
                 if ($identis['Acceso'] == "SI") {
                     //Pendiente que el piurano nos de el componente para registro en AD.
-                    
                 }
                 if ($identis['CorreoUPCH'] == "SI") {
                     $resultado_correo = Utils::generateCorporativeMail($identis);
@@ -300,11 +331,12 @@ class ManageController extends MainController {
             }
 
             if ($log) {
-                ULog::register($model->id_user, "user", "create", json_encode($results));
+                ULog::register($model->id_user, "user", $action, json_encode($results));
                 //Cambiando el estado del usuario a Deshabilitado
                 $model->state_user = 2;
+                $model->setScenario('default');
 
-                if (!$model->update()) {
+                if (!$model->update(['state_user'])) {
                     throw new Exception('[Error al actualizar usuario] ' . Utils::getErrorsText($model->getErrors()), 900);
                 }
             }
@@ -312,7 +344,7 @@ class ManageController extends MainController {
             $transaction->commit();
             $response['data']['id_user'] = $model->id_user;
             $response['data']['results'] = $results;
-            JSON::response(FALSE, 200, "Usuario registrado con éxito", $response);
+            JSON::response(FALSE, 200, "Usuario " . ($action == "create") ? "registrado" : "actualizado" . " con éxito", $response);
         } catch (Exception $ex) {
             $transaction->rollBack();
             JSON::response(TRUE, $ex->getCode(), $ex->getMessage(), []);
@@ -327,7 +359,7 @@ class ManageController extends MainController {
     public function actionEdit($id) {
         $data                = QUser::getByPk($id);
         $chacad              = Chacad::getDatosPersonales($data['cod_per']);
-        $log                 = QLog::get($id, "user", "create");
+        $log                 = QLog::get($id, "user"); // en el caso de janet es "update"
         $this->current_title = $chacad['nombre_persona'];
         return $this->render('edit', ['data' => $data, 'chacad' => $chacad, "log" => $log]);
     }

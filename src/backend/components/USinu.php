@@ -21,4 +21,8 @@ class USinu {
         return Sinu::registrarUsuario($identis);
     }
 
+    public static function editarUsuario($identis) {
+        return Sinu::editarUsuario($identis);
+    }
+
 }

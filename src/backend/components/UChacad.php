@@ -46,9 +46,21 @@ class UChacad {
     public static function registrarUsuario($identis) {
         return Chacad::registrarUsuario($identis);
     }
-    
+
+    public static function editarUsuario($identis) {
+        return Chacad::editarUsuario($identis);
+    }
+
     public static function registrarTmpCorre($identis) {
         return Chacad::registrarTmpCorre($identis);
+    }
+
+    /**
+     * Comment
+     */
+    public static function getCorreoInstitucional($codPer) {
+        $chacad = Chacad::getDatosPersonales($codPer);
+        return $chacad['correo_institucional'];
     }
 
 }

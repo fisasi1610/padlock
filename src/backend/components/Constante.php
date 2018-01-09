@@ -87,5 +87,8 @@ class Constante {
     const REGISTRO_USUARIO_ICEBERG = 3;
     const REGISTRO_USUARIO_SINU    = 4;
     const REGISTRO_USUARIO_GOOGLE  = 5;
+    const EDICION_USUARIO_CHACAD   = 6;
+    const EDICION_USUARIO_ICEBERG  = 7;
+    const EDICION_USUARIO_SINU     = 8;
 
 }

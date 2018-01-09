@@ -78,8 +78,10 @@
         form.find('input[name^="identis[Ape2]"]').val(data['Ape2']);
         form.find('select[name^="identis[tdocu]"]').val(data['tdocu']);
         form.find('select[name^="identis[Sexo]"]').val(data['Sexo']);
-        form.find('input[name^="identis[telefono]"]').val(data['telefono_personal']);
-        form.find('input[name^="identis[email]"]').val(data['email_personal']);
+        form.find('input[name^="identis[Celular]"]').val(data['celular_personal']);
+        form.find('input[name^="identis[Telefono]"]').val(data['telefono_personal']);
+        form.find('input[name^="identis[Email]"]').val(data['email_personal']);
+        form.find('input[name^="identis[Direccion]"]').val(data['direccion_personal']);
     };
 
     var check_user = function (data, btn) {

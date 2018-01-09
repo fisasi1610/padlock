@@ -63,6 +63,12 @@
                         <div class="col-md-6">
                             <h3>Contacto</h3>
                             <div class="form-group row">
+                                <label for="form-1-1" class="col-md-3 control-label">Celular</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="identis[Celular]" autocomplete="off" placeholder="Celular">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Teléfono</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" name="identis[Telefono]" autocomplete="off" placeholder="Teléfono">
@@ -77,7 +83,7 @@
                             <div class="form-group row">
                                 <label for="form-1-1" class="col-md-3 control-label">Dirección</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="identis[Direccion]" autocomplete="off" placeholder="Email">
+                                    <input type="text" class="form-control" name="identis[Direccion]" autocomplete="off" placeholder="Direccion">
                                 </div>
                             </div>
                             <h3>Configuración</h3>
