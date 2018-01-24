@@ -9,7 +9,8 @@
         "yiisoft/yii2-debug": "^2.0",
         "insite/yii2-gii": "dev-master",
         "insite/yii2-theme-espire": "dev-master",
-        "idk/yii2-google-apiclient": "^1.1"
+        "idk/yii2-google-apiclient": "^1.1",
+        "nolbertovilchez/yii2-ldap": "^1.1"
     },
     "authors": [
         {

@@ -90,5 +90,6 @@ class Constante {
     const EDICION_USUARIO_CHACAD   = 6;
     const EDICION_USUARIO_ICEBERG  = 7;
     const EDICION_USUARIO_SINU     = 8;
+    const REGISTRO_USUARIO_LDAP    = 9;
 
 }

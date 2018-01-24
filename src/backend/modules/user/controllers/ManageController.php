@@ -33,11 +33,27 @@ class ManageController extends MainController {
         $identis['Nombres'] = "Francisco";
         $identis['Ape1']    = "Isasi";
         $identis['Ape2']    = "Chiesa";
-        $resultado_correo   = Utils::generateCorporativeMail($identis);
-        Utils::show($identis);
 
-        Utils::show($resultado_correo, true);
+        $ldap = Yii::$app->ldap;
 
+//        $autenticate = $ldap->authenticated("46755178", "Amanda242002");
+//        Utils::show($autenticate);
+        $user = $ldap->search("test000002");
+        Utils::show($user);
+
+//        $params['username']        = "test000002";
+//        $params['password']        = "Xtest000002";
+//        $params['firstname']       = "nombreOuti";
+//        $params['lastname']        = "apellidoOuti";
+//        $params['motherslastname'] = "apellido2Outi";
+//        $params['mail']            = "test000002@upch.pe";
+//        $params['phone']           = "987654321";
+//        $create                    = $ldap->create($params);
+//        Utils::show($create);
+//        $resultado_correo   = Utils::generateCorporativeMail($identis);
+//        Utils::show($identis);
+//
+//        Utils::show($resultado_correo, true);
 //
 //        $new_account   = [
 //            "primaryEmail" => "francisco.isasi@miasoftware.net",
@@ -237,9 +253,6 @@ class ManageController extends MainController {
 //                    throw new Exception('[Error al crear los datos en chacad] ' . $resultado->message, 900);
                 }
 
-                if ($identis['Acceso'] == "SI") {
-                    //Pendiente que el piurano nos de el componente para registro en AD.
-                }
                 if ($identis['CorreoUPCH'] == "SI") {
                     $resultado_correo = Utils::generateCorporativeMail($identis);
                     if ($resultado_correo->error) {
@@ -327,6 +340,27 @@ class ManageController extends MainController {
                         $log = true;
 //                        throw new Exception('[Error al crear los datos en sinu] ' . $resultado_sinu->message, 900);
                     }
+                }
+                if ($identis['Acceso'] == "SI") {
+                    //Pendiente que el piurano nos de el componente para registro en AD.
+//                    $ldap = Yii::$app->ldap;
+//
+//                    $params['username']        = $model->username;
+//                    $params['password']        = $model->password;
+//                    $params['firstname']       = $identis["Nombres"];
+//                    $params['lastname']        = $identis["Ape1"];
+//                    $params['motherslastname'] = $identis["Ape2"];
+//                    $params['mail']            = isset($identis['CORREO_UPCHPE']) ? $identis["CORREO_UPCHPE"] : '';
+//                    $params['phone']           = isset($identis['Celular']) ? utf8_decode(ltrim(rtrim($identis['Celular']))) : '';
+//                    $resultado_ldap            = $ldap->create($params);
+//                    if ($resultado_ldap->error) {
+//                        $results['ldap'] = [
+//                            "message" => $resultado_ldap->message,
+//                            "step"    => Constante::REGISTRO_USUARIO_LDAP
+//                        ];
+//
+//                        $log = true;
+//                    }
                 }
             }
 

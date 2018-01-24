@@ -26,7 +26,7 @@ $config = [
             'linkAssets' => true,
         ],
         'request'      => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey'  => 'nolberto',
             'enableCsrfValidation' => false,
         ],
@@ -43,8 +43,8 @@ $config = [
         'mailer'       => [
             'class'            => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
+// 'useFileTransport' to false and configure a transport
+// for the mailer to send real emails.
             'useFileTransport' => true,
         ],
         'log'          => [
@@ -64,6 +64,18 @@ $config = [
             'class'            => 'idk\yii2\google\apiclient\components\GoogleApiClient',
             'credentialsPath'  => '@runtime/google-apiclient/admin_71f528e0-5eb1-4a4d-8a8e-c5938b579ff5.json',
             'clientSecretPath' => '@runtime/google-apiclient/secret.json',
+        ],
+        'ldap'         => [
+            'class'   => 'nolbertovilchez\yii2\Ldap',
+            'options' => [
+                'server'         => 'UPCH130',
+                'domain'         => 'upch.edu.pe',
+                'dc'             => 'dc=upch,dc=edu,dc=pe',
+                'version'        => 3,
+                'port'           => 389,
+                'admin_username' => 'testdrllo01',
+                'admin_password' => 'Xtestdrllo01',
+            ]
         ],
         'urlManager'   => [
             'enablePrettyUrl' => true,

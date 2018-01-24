@@ -56,29 +56,33 @@
                 <tr>
                     <?php
                     $data = json_decode($log['message']);
-                    foreach ($data as $key => $value):
-                        ?>
-                        <th colspan="<?= count($value) ?>"><?= $key ?></th>
-                    <?php endforeach; ?>
+                    if (is_array($data)):
+                        foreach ($data as $key => $value):
+                            ?>
+                            <th colspan="<?= count($value) ?>"><?= $key ?></th>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tr>
                 <tr>
                     <?php
-                    foreach ($data as $key => $value):
-                        if (is_array($value)):
-                            foreach ($value as $k => $v):
-                                $step = ($v->step == \app\components\Constante::REGISTRO_USUARIO_CHACAD) ? "Registro de Usuario Chacad" : ($v->step == \app\components\Constante::EDICION_USUARIO_CHACAD) ? "Actualizacion de Usuario Chacad" : "Actualizacion de Correo Chacad";
+                    if (is_array($data)):
+                        foreach ($data as $key => $value):
+                            if (is_array($value)):
+                                foreach ($value as $k => $v):
+                                    $step = ($v->step == \app\components\Constante::REGISTRO_USUARIO_CHACAD) ? "Registro de Usuario Chacad" : ($v->step == \app\components\Constante::EDICION_USUARIO_CHACAD) ? "Actualizacion de Usuario Chacad" : "Actualizacion de Correo Chacad";
+                                    ?>
+                                    <td><?= (!$v->message) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $v->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>"; ?></td>
+                                <?php endforeach; ?>
+                                <?php
+                            else:
+                                if ($value) {
+                                    $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : ($value->step == \app\components\Constante::REGISTRO_USUARIO_SINU) ? "Registro de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_SINU) ? "Edicion de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_ICEBERG) ? "Edicion de Usuario Iceberg" : "Registro de Usuario Google";
+                                }
                                 ?>
-                                <td><?= (!$v->message) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $v->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>"; ?></td>
-                            <?php endforeach; ?>
-                            <?php
-                        else:
-                            if ($value) {
-                                $step = ($value->step == \app\components\Constante::REGISTRO_USUARIO_ICEBERG) ? "Registro de Usuario Iceberg" : ($value->step == \app\components\Constante::REGISTRO_USUARIO_SINU) ? "Registro de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_SINU) ? "Edicion de Usuario Sinu" : ($value->step == \app\components\Constante::EDICION_USUARIO_ICEBERG) ? "Edicion de Usuario Iceberg" : "Registro de Usuario Google";
-                            }
-                            ?>
-                            <td><?= (!$value) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $value->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>" ?></td>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                                <td><?= (!$value) ? "<i class='fa fa-check text-success'></i>" : "<i data-message=\"" . $value->message . "\" data-step='" . $step . "' class='showModalError pointer fa fa-times text-danger'></i>" ?></td>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tr>
             </table>
         </div>
