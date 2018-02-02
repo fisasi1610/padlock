@@ -34,13 +34,19 @@ class ManageController extends MainController {
         $identis['Ape1']    = "Isasi";
         $identis['Ape2']    = "Chiesa";
 
-        $ldap = Yii::$app->ldap;
-
 //        $autenticate = $ldap->authenticated("46755178", "Amanda242002");
 //        Utils::show($autenticate);
-        $user = $ldap->search("test000002");
+        $user = Yii::$app->ldap->search("46755178");        
+//        $user = Yii::$app->ldap->search("41519567");        
+//        $user = Yii::$app->ldap->search("41532507");        
+//        $user = Yii::$app->ldap->search("42117913");        
+//        $user = Yii::$app->ldap->search("44202141");        
+//        $user = Yii::$app->ldap->search("42528565");        
+//        $user = Yii::$app->ldap->search("21550924");        
         Utils::show($user);
 
+//        $change = Yii::$app->ldap->changePassword($user['data'][0]['distinguishedname'][0], "Amanda242002");
+//        Utils::show($change);
 //        $params['username']        = "test000002";
 //        $params['password']        = "Xtest000002";
 //        $params['firstname']       = "nombreOuti";
